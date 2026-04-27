@@ -1,6 +1,9 @@
 # @soarailabs/plugin-sdk
 
-Wrapper SDK for building OpenCode plugins with less boilerplate.
+Wrapper SDK for building plugins with less boilerplate.
+
+> **Note:** This SDK currently supports only OpenCode plugins.
+> Support for Codex plugins and pi coding agent extensions is planned soon.
 
 ## Install
 
