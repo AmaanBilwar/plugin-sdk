@@ -14,6 +14,10 @@
     "./opencode": {
       "types": "./dist/opencode/src/index.d.ts",
       "import": "./dist/opencode/src/index.js"
+    },
+    "./pi": {
+      "types": "./dist/pi/src/index.d.ts",
+      "import": "./dist/pi/src/index.js"
     }
   },
   "scripts": {
