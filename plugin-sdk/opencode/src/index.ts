@@ -1,4 +1,10 @@
 import type { Hooks, Plugin, PluginInput, PluginOptions } from "@opencode-ai/plugin";
+import {
+  matchesAnyPattern,
+  resolveValueOrFactory,
+  runFactories,
+  type ValueOrFactory,
+} from "../../src/core/index.js";
 
 export * from "@opencode-ai/plugin";
 
@@ -19,10 +25,10 @@ type ReadToolBeforeHandler = (
   output: Parameters<BeforeToolExecuteHook>[1],
   ctx: PluginInput,
 ) => void | Promise<void>;
-type InjectEnvInput = Record<string, string | undefined> | ((
-  input: Parameters<ShellEnvHook>[0],
-  ctx: PluginInput,
-) => Record<string, string | undefined> | Promise<Record<string, string | undefined>>);
+type InjectEnvInput = ValueOrFactory<
+  Record<string, string | undefined>,
+  [Parameters<ShellEnvHook>[0], PluginInput]
+>;
 
 export function definePlugin(factory: Plugin): Plugin {
   return factory;
@@ -64,10 +70,7 @@ export function onShellEnv(
 
 export function injectEnv(envOrFactory: InjectEnvInput): HookFactory {
   return onShellEnv(async (input, output, ctx) => {
-    const env =
-      typeof envOrFactory === "function"
-        ? await envOrFactory(input, ctx)
-        : envOrFactory;
+    const env = await resolveValueOrFactory(envOrFactory, input, ctx);
 
     for (const [key, value] of Object.entries(env)) {
       if (typeof value === "string") {
@@ -104,12 +107,7 @@ export function onReadToolExecuteBefore(handler: ReadToolBeforeHandler): HookFac
 
 export function blockReadPaths(patterns: Array<string | RegExp>, message = "Blocked by plugin policy"): HookFactory {
   return onReadToolExecuteBefore((filePath) => {
-    const shouldBlock = patterns.some((pattern) =>
-      typeof pattern === "string"
-        ? filePath.includes(pattern)
-        : pattern.test(filePath),
-    );
-    if (shouldBlock) {
+    if (matchesAnyPattern(filePath, patterns)) {
       throw new Error(message);
     }
   });
@@ -121,7 +119,7 @@ export function addTools(tools: NonNullable<Hooks["tool"]>): HookFactory {
 
 export function createPlugin(...parts: HookFactory[]): Plugin {
   return definePlugin(async (ctx, options) => {
-    const patches = await Promise.all(parts.map((part) => part(ctx, options)));
+    const patches = await runFactories(parts, ctx, options);
     return mergeHooks(patches);
   });
 }
