@@ -1,5 +1,5 @@
 {
-  "name": "@soarailabs/plugin-sdk",
+  "name": "@amaan/plugin-sdk",
   "version": "0.0.1",
   "private": false,
   "description": "Minimal wrapper SDK to make OpenCode plugins easier to write.",

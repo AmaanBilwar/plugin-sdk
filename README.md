@@ -1,4 +1,4 @@
-# @soarailabs/plugin-sdk
+# @amaan/plugin-sdk
 
 Wrapper SDK for building plugins with less boilerplate.
 
@@ -8,7 +8,7 @@ Wrapper SDK for building plugins with less boilerplate.
 ## Install
 
 ```bash
-npm install @soarailabs/plugin-sdk
+npm install @amaan/plugin-sdk
 ```
 
 ## Write a plugin
@@ -20,8 +20,8 @@ Create a file in your project:
 Use the SDK helpers:
 
 ```ts
-import type { Plugin } from "@soarailabs/plugin-sdk";
-import { createPlugin, injectEnv, blockReadPaths, onSessionIdle } from "@soarailabs/plugin-sdk";
+import type { Plugin } from "@amaan/plugin-sdk";
+import { createPlugin, injectEnv, blockReadPaths, onSessionIdle } from "@amaan/plugin-sdk";
 
 export const MyPlugin: Plugin = createPlugin(
   injectEnv(() => ({ MY_PLUGIN: "1" })),
