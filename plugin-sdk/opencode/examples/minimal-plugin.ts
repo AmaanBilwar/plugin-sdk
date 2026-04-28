@@ -9,8 +9,8 @@ import {
 export const MinimalPlugin: Plugin = createPlugin(
   // 1) Inject env vars for every shell session.
   injectEnv((input) => ({
-    SOARAILABS_PLUGIN: "true",
-    SOARAILABS_WORKTREE: input.cwd,
+    AMAAN_PLUGIN: "true",
+    AMAAN_WORKTREE: input.cwd,
   })),
 
   // 2) Block attempts to read env files.
