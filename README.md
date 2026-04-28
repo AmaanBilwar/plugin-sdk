@@ -1,5 +1,7 @@
 # @amaan/plugin-sdk
 
+while I work on docs and minimal examples on how to use this sdk, feel free to try it out yourself :) 
+
 ## What this project is
 
 `@amaan/plugin-sdk` is a wrapper SDK for coding-agent extension systems.
