@@ -1,68 +1,56 @@
 # @amaan/plugin-sdk
 
-Wrapper SDK for building plugins with less boilerplate.
+## What this project is
 
-> **Note:** This SDK currently supports only OpenCode plugins.
-> Support for Codex plugins and pi coding agent extensions is planned soon.
+`@amaan/plugin-sdk` is a wrapper SDK for coding-agent extension systems.
+It gives a shared abstraction layer over multiple agent runtimes.
 
-## Install
+## What it does
 
-```bash
-npm install @amaan/plugin-sdk
-```
+It reduces extension/plugin boilerplate by providing reusable helpers such as:
 
-## Write a plugin
+- lifecycle/event registration
+- policy helpers (for example file-read guards)
+- composable extension/plugin construction
+- platform-specific adapters under one package
 
-Create a file in your project:
+## Why it does it
 
-- `.opencode/plugins/my-plugin.ts`
+Each coding agent has a different extension API surface.
+Without a wrapper, teams rewrite the same patterns for every platform.
+This project provides a consistent authoring model so extension logic is easier to write, test, and port.
 
-Use the SDK helpers:
+## How it does it
 
-```ts
-import type { Plugin } from "@amaan/plugin-sdk";
-import { createPlugin, injectEnv, blockReadPaths, onSessionIdle } from "@amaan/plugin-sdk";
+The SDK is organized into:
 
-export const MyPlugin: Plugin = createPlugin(
-  injectEnv(() => ({ MY_PLUGIN: "1" })),
-  blockReadPaths([".env"], "Do not read .env files"),
-  onSessionIdle(async (_event, ctx) => {
-    await ctx.client.app.log({
-      body: {
-        service: "my-plugin",
-        level: "info",
-        message: "Session idle",
-      },
-    });
-  }),
-);
+- a shared internal core abstraction layer (`src/core`)
+- platform adapters (`opencode`, `pi`)
+- thin top-level exports (`src/index.ts`)
 
-export default MyPlugin;
-```
+The shared core contains composition primitives.
+Each platform adapter maps those primitives to its native runtime APIs.
 
-Restart OpenCode after adding or changing plugin files.
+## What plugins/extensions are supported
 
-## Build this SDK
+Current support:
 
-```bash
-npm install
-npm run build
-```
+- OpenCode plugins (`@amaan/plugin-sdk/opencode`)
+- PI coding-agent extensions (`@amaan/plugin-sdk/pi`)
 
-## Available helpers
+Note for PI:
 
-- `createPlugin`
-- `withHooks`
-- `onEvent`
-- `onToolExecuteBefore`
-- `onToolExecuteAfter`
-- `onReadToolExecuteBefore`
-- `blockReadPaths`
-- `onShellEnv`
-- `injectEnv`
-- `onSessionIdle`
-- `addTools`
+- PI does not have an OpenCode-style global `shell.env` hook.
+- The PI adapter intentionally avoids exposing behavior that PI does not natively support.
 
-## Examples
+## Future coding-agent plugins/extensions support
 
-OpenCode examples are in `opencode/examples/`.
+Planned next support areas:
+
+- Codex-focused wrappers
+- additional coding-agent extension systems as they stabilize
+- stronger typed event/context maps per platform
+
+---
+
+For installation, local development, build commands, and contribution workflow, see `CONTRIBUTING.md`.
