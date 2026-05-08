@@ -3,3 +3,4 @@ node_modules/
 .cursor/
 .github/
 dist/
+config.bat
